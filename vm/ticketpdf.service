@@ -1,0 +1,50 @@
+[Unit]
+Description=FlashTicket ticketpdf
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ticketpdf
+Group=ticketpdf
+ExecStart=/opt/ticketpdf/bin/ticketpdf
+Restart=always
+RestartSec=2
+UMask=0077
+
+# Lot 1 : fichiers
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ticketpdf
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+
+# Lot 2 : noyau
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectProc=invisible
+ProcSubset=pid
+
+# Lot 3 : privilèges (8443 > 1024 : aucune capability nécessaire)
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=yes
+
+# Lot 4 : appels système et réseau
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+MemoryDenyWriteExecute=yes
+
+# Lot 5 : bonus
+LockPersonality=yes
+RestrictRealtime=yes
+ProtectClock=yes
+ProtectHostname=yes
+RemoveIPC=yes
+
+[Install]
+WantedBy=multi-user.target

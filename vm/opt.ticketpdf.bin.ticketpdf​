@@ -1,0 +1,11 @@
+# /etc/apparmor.d/opt.ticketpdf.bin.ticketpdf​
+
+#include <tunables/global>​
+
+/opt/ticketpdf/bin/ticketpdf {​
+  #include <abstractions/base>​
+  network inet stream,​
+  /opt/ticketpdf/bin/ticketpdf mr,​
+  /var/lib/ticketpdf/** rw,​
+  /etc/ticketpdf/tls/* r,​
+}​
