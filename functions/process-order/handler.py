@@ -31,9 +31,69 @@ def process_message(order):
     #          Item : pk, status=IN_PROGRESS, orderId, ttl=maintenant + TTL_SECONDS.
     #          ConditionalCheckFailedException => doublon : décider quoi faire
     #          (indice : que se passe-t-il si la clé est IN_PROGRESS depuis un plantage ?).
+    try:
+        dynamodb.put_item(
+            TableName=TABLE_IDEMPOTENCY,
+            Item={
+                "pk": {"S": order["idempotencyKey"]},
+                "status": {"S": "IN_PROGRESS"},
+                "orderId": {"S": order["orderId"]},
+                "ttl": {"N": str(int(time.time()) + TTL_SECONDS)},
+            },
+            ConditionExpression="attribute_not_exists(pk)",
+        )
+        except ClientError as e:
+            if e.response["Error"]["Code"] != "ConditionalCheckFailedException":
+                raise
+            item = dynamodb.get_item(
+                TableName=TABLE_IDEMPOTENCY, Key={"pk": {"S": key}}, ConsistentRead=True
+            ).get("Item", {})
+            if item.get("status", {}).get("S") == "DONE":
+                log("warn", "message en double", idempotencyKey=key)
+                return  # déjà traité : succès, on ne retraite pas
+            # IN_PROGRESS : traitement en cours ailleurs (ou plantage) -> on réessaiera plus tard
+        raise RuntimeError(f"clé {key} encore IN_PROGRESS"
+
     # TODO 2 : écrire la commande dans la table orders.
+    dynamodb.put_item(
+        TableName=TABLE_ORDERS,
+        Item={
+            "pk": {"S": order["orderId"]},
+            "sk": {"S": order["idempotencyKey"]},
+            "eventId": {"S": order["eventId"]},
+            "seats": {"N": str(order["seats"])},
+            "email": {"S": order["email"]},
+            "createdAt": {"S": order["createdAt"]},
+        },
+    )
+
     # TODO 3 : publier l'événement OrderConfirmed dans le stream (kinesis.put_record).
+    kinesis.put_record(
+        StreamName=STREAM_NAME,
+        Data=json.dumps(
+            {
+                "type": "OrderConfirmed",
+                "orderId": order["orderId"],
+                "eventId": order["eventId"],
+                "seats": order["seats"],
+                "email": order["email"],
+                "createdAt": order["createdAt"],
+            }
+        ),
+        PartitionKey=order["orderId"],
+    )
+
     # TODO 4 : marquer la clé DONE (update_item) SEULEMENT à la fin.
+    dynamodb.update_item(
+        TableName=TABLE_IDEMPOTENCY,
+        Key={"pk": order["idempotencyKey"]},
+        UpdateExpression="SET #status = :status",
+        ExpressionAttributeNames={"#status": "status"},
+        ExpressionAttributeValues={":done": "DONE"},
+    )
+    log("info", "commande traitée", orderId=order["orderId"],
+        idempotencyKey=key, correlationId=order.get("correlationId"))
+
     raise NotImplementedError
 
 

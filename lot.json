@@ -1,0 +1,12 @@
+[
+{"Id":"ok1","MessageBody":"{\"orderId\":\"o-partiel-1\",\"idempotencyKey\":\"k-partiel-1\",\"eventId\":\"evt-1\",\"seats\":1,\"email\":\"partiel@test.fr\",\"createdAt\":\"2026-11-18T15:00:00Z\"}"},
+{"Id":"ko1","MessageBody":"pas du json 1"},
+{"Id":"ok2","MessageBody":"{\"orderId\":\"o-partiel-2\",\"idempotencyKey\":\"k-partiel-2\",\"eventId\":\"evt-1\",\"seats\":1,\"email\":\"partiel@test.fr\",\"createdAt\":\"2026-11-18T15:00:00Z\"}"},
+{"Id":"ko2","MessageBody":"pas du json 2"},
+{"Id":"ok3","MessageBody":"{\"orderId\":\"o-partiel-3\",\"idempotencyKey\":\"k-partiel-3\",\"eventId\":\"evt-1\",\"seats\":1,\"email\":\"partiel@test.fr\",\"createdAt\":\"2026-11-18T15:00:00Z\"}"},
+{"Id":"ko3","MessageBody":"pas du json 3"},
+{"Id":"ok4","MessageBody":"{\"orderId\":\"o-partiel-4\",\"idempotencyKey\":\"k-partiel-4\",\"eventId\":\"evt-1\",\"seats\":1,\"email\":\"partiel@test.fr\",\"createdAt\":\"2026-11-18T15:00:00Z\"}"},
+{"Id":"ko4","MessageBody":"pas du json 4"},
+{"Id":"ok5","MessageBody":"{\"orderId\":\"o-partiel-5\",\"idempotencyKey\":\"k-partiel-5\",\"eventId\":\"evt-1\",\"seats\":1,\"email\":\"partiel@test.fr\",\"createdAt\":\"2026-11-18T15:00:00Z\"}"},
+{"Id":"ko5","MessageBody":"pas du json 5"}
+]
