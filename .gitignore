@@ -1,7 +1,5 @@
-*.tfstate
-*.tfstate.*
-.terraform/
-*.key
-*.pem
-tls.key
+node_modules/
+dist/
+*.zip
+loadtest/summary.json
 .env
