@@ -3,16 +3,18 @@
 Projet fil rouge FlashTicket. Ce dépôt contient ce que le formateur fournit.
 Tout ce que vous produisez pendant le TD est **versionné ici** (un commit par étape).
 
+L'objectif de ce TD est de sécurisé la base du projet.
+
 ## Contenu
 
-| Chemin | Rôle |
-|---|---|
-| `bin/ticketpdf` | Binaire statique x86-64 du service de billets PDF (`bin/ticketpdf-arm64` pour une VM ARM, Multipass sur Mac M1 à M4) |
-| `src/ticketpdf/` | Code source (lecture seule, pour comprendre ; inutile de recompiler) |
-| `vm/nftables.conf` | Pare-feu du cours, **à adapter** (réseaux source) |
-| `vm/99-flashticket.conf` | Réglages noyau du cours, à copier dans `/etc/sysctl.d/` |
-| `scripts/verify-td1.sh` | Auto-vérification à lancer dans la VM avant le point de contrôle |
-| `vm/`, `network/`, `iam/` | Vos livrables (voir le sujet de TD) |
+| Chemin                    | Rôle                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `bin/ticketpdf`           | Binaire statique x86-64 du service de billets PDF (`bin/ticketpdf-arm64` pour une VM ARM, Multipass sur Mac M1 à M4) |
+| `src/ticketpdf/`          | Code source (lecture seule, pour comprendre ; inutile de recompiler)                                                 |
+| `vm/nftables.conf`        | Pare-feu du cours, **à adapter** (réseaux source)                                                                    |
+| `vm/99-flashticket.conf`  | Réglages noyau du cours, à copier dans `/etc/sysctl.d/`                                                              |
+| `scripts/verify-td1.sh`   | Auto-vérification à lancer dans la VM avant le point de contrôle                                                     |
+| `vm/`, `network/`, `iam/` | Vos livrables (voir le sujet de TD)                                                                                  |
 
 ## Le service ticketpdf
 
@@ -21,12 +23,12 @@ Tout ce que vous produisez pendant le TD est **versionné ici** (un commit par �
 - Écrit ses PDF dans `/var/lib/ticketpdf`.
 - Réglable par variables d'environnement : `TICKETPDF_LISTEN`, `TICKETPDF_DATA_DIR`, `TICKETPDF_TLS_DIR`.
 
-| Requête | Effet |
-|---|---|
-| `GET /healthz` | `ok` si le répertoire de données est inscriptible |
-| `POST /tickets` avec `{"order_id":"o-1","event":"Concert","holder":"Ada","seat":"B12"}` | crée `/var/lib/ticketpdf/o-1.pdf` |
-| `GET /tickets/o-1.pdf` | renvoie le PDF |
-| `GET /debug/read?path=/chemin` | **lit n'importe quel fichier** (faille voulue) |
+| Requête                                                                                 | Effet                                             |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `GET /healthz`                                                                          | `ok` si le répertoire de données est inscriptible |
+| `POST /tickets` avec `{"order_id":"o-1","event":"Concert","holder":"Ada","seat":"B12"}` | crée `/var/lib/ticketpdf/o-1.pdf`                 |
+| `GET /tickets/o-1.pdf`                                                                  | renvoie le PDF                                    |
+| `GET /debug/read?path=/chemin`                                                          | **lit n'importe quel fichier** (faille voulue)    |
 
 Exemple : `curl -k https://localhost:8443/healthz`
 
