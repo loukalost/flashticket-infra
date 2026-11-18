@@ -1,0 +1,1 @@
+{"errorType":"ReferenceError","errorMessage":"err is not defined","trace":["ReferenceError: err is not defined","    at Runtime.handler (/var/task/index.js:30600:14)","    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"]}
